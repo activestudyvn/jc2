@@ -22,6 +22,7 @@ public class Ex2 {
     //list dir in input and output folder
     static ArrayList<File> listInputDir = new ArrayList<>();
     static ArrayList<File> listOutputDir = new ArrayList<>();
+
     public static void main(String[] args) throws IOException {
         //Get list dir in input and output folder
         for (File inputSubDir : input.listFiles()) {
@@ -31,6 +32,7 @@ public class Ex2 {
             listOutputDir.add(outputSubDir);
         }
 
+        MAIN_LOOP:
         for (File inputDir : listInputDir) {
             //get all files in inputDir. File name must match inputPattern
             File[] filesInput = inputDir.listFiles(new FileFilter() {
@@ -43,7 +45,7 @@ public class Ex2 {
             //get outputDir in output folder which have the same name with inputDir folder
             Optional<File> outputDir = listOutputDir.parallelStream()
                     .filter(file -> file.getName().equals(inputDir.getName())).findAny();
-            if (!outputDir.isPresent()) continue;
+            if (!outputDir.isPresent()) continue MAIN_LOOP;
 
             //get all files in inputDir. File name must match outputPattern
             File[] filesOutput = outputDir.get().listFiles(new FileFilter() {
@@ -59,9 +61,9 @@ public class Ex2 {
             Set<String> tempInputSet = new HashSet<>(inputSet);
             LocalDate fileDate = LocalDate.parse(inputDir.getName(), defaultDateFormatter);
             inputSet.removeAll(outputSet);
-            System.out.println(fileDate.format(dateFormatter) + " Input co nhung Output ko co: " + inputSet);
+            writeToFile(inputSet, fileDate.toString() + "input_co");
             outputSet.removeAll(tempInputSet);
-            System.out.println(fileDate.format(dateFormatter) + "Output co nhung Input ko co: " + outputSet);
+            writeToFile(outputSet, fileDate.toString() + "output_co");
         }
     }
 
@@ -85,6 +87,17 @@ public class Ex2 {
             }
         }
         return phoneSet;
+    }
+
+    static void writeToFile(Set<String> dataSet, String fileName) throws IOException {
+        File file = new File(fileName);
+        StringBuilder data = new StringBuilder();
+        for (String s : dataSet) {
+            data.append(s + (char) 0x03);
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            writer.write(data.toString());
+        }
     }
 
 }
