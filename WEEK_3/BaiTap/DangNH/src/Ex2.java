@@ -1,6 +1,4 @@
 import java.io.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
@@ -16,8 +14,8 @@ public class Ex2 {
     static final Pattern outputPattern = Pattern.compile("\\d+_8x56_\\d.txt");
     static final File input = new File("input");
     static final File output = new File("output");
-    static final DateTimeFormatter defaultDateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-    static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+//    static final DateTimeFormatter defaultDateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+//    static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     //list dir in input and output folder
     static ArrayList<File> listInputDir = new ArrayList<>();
@@ -59,11 +57,11 @@ public class Ex2 {
             Set<String> inputSet = getPhoneSet(filesInput);
             Set<String> outputSet = getPhoneSet(filesOutput);
             Set<String> tempInputSet = new HashSet<>(inputSet);
-            LocalDate fileDate = LocalDate.parse(inputDir.getName(), defaultDateFormatter);
+//            LocalDate fileDate = LocalDate.parse(inputDir.getName(), defaultDateFormatter);
             inputSet.removeAll(outputSet);
-            writeToFile(inputSet, fileDate.toString() + "input_co");
+            writeToFile(inputSet, inputDir.getName() + "input_co");
             outputSet.removeAll(tempInputSet);
-            writeToFile(outputSet, fileDate.toString() + "output_co");
+            writeToFile(outputSet, inputDir.getName() + "output_co");
         }
     }
 
