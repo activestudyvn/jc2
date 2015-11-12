@@ -77,7 +77,6 @@ public class Ex2 {
         for (File file : fileArr) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String s = "";
-                int count = 1;
                 while ((s = reader.readLine()) != null) {
                     if (phonePattern.matcher(s).matches()) {
                         phoneSet.add(s);
