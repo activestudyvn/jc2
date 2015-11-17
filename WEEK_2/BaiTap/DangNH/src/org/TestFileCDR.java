@@ -7,7 +7,7 @@ import java.io.IOException;
  */
 public class TestFileCDR {
     public static void main(String[] args) throws IOException {
-        try (FileCDR fileCDR = new FileCDR(1, 10, 1, "DataFile", "data")) {
+        try (FileCDR fileCDR = new FileCDR(1, 10, 2, "Date", "data/date")) {
             for (int i = 0; i < 10000; i++) {
                 fileCDR.write("test string");
             }

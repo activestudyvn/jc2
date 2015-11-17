@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * Created by 404NotFound on 11/9/2015.
  */
-public class Ex2 {
+public abstract class Ex2 {
     static final Pattern phonePattern = Pattern.compile("849\\d+");
     static final Pattern inputPattern = Pattern.compile("cdr_\\d+_8x56_\\d.txt");
     static final Pattern outputPattern = Pattern.compile("\\d+_8x56_\\d.txt");

@@ -1,5 +1,6 @@
 package org;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,7 +9,7 @@ import java.util.Scanner;
 /**
  * Created by 404NotFound on 11/4/2015.
  */
-public class BigFile {
+public class BigFile implements AutoCloseable,Closeable {
     Scanner sc;
     private File file;
     private FileInputStream fis;
@@ -26,7 +27,7 @@ public class BigFile {
     public String next() {
         return sc.nextLine();
     }
-
+    @Override
     public void close() {
         sc.close();
     }

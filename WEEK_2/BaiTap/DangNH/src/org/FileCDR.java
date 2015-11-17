@@ -91,15 +91,15 @@ public class FileCDR implements AutoCloseable, Closeable {
     public void write(String source) throws IOException {
         switch (writeType) {
             case 1: {
-                writeWithType1(source);
+                WriteByNumberOfLine(source);
                 break;
             }
             case 2: {
-                writeWithType2(source);
+                WriteBySize(source);
                 break;
             }
             case 3: {
-                writeWithType3(source);
+                WriteByTimeCreated(source);
                 break;
             }
         }
@@ -125,7 +125,7 @@ public class FileCDR implements AutoCloseable, Closeable {
      * @param source String to write
      * @throws IOException if an I/O error occur
      */
-    private void writeWithType1(String source) throws IOException {
+    private void WriteByNumberOfLine(String source) throws IOException {
         //Check fileType Mode
 
         switch (fileType) {
@@ -160,7 +160,7 @@ public class FileCDR implements AutoCloseable, Closeable {
      * @param source String to write
      * @throws IOException if an I/O error occur
      */
-    private void writeWithType2(String source) throws IOException {
+    private void WriteBySize(String source) throws IOException {
         //Check fileType Mode
         switch (fileType) {
             case 1: {
@@ -194,7 +194,7 @@ public class FileCDR implements AutoCloseable, Closeable {
      * @param source data to write
      * @throws IOException if an I/O error occur
      */
-    private void writeWithType3(String source) throws IOException {
+    private void WriteByTimeCreated(String source) throws IOException {
         long hours = ChronoUnit.HOURS.between(lastCreationTime, LocalDateTime.now());
         System.out.println(hours);
         //Check fileType Mode
@@ -288,6 +288,7 @@ public class FileCDR implements AutoCloseable, Closeable {
     private File getLastModifiedFile() {
         File fl = new File(filePath);
         File[] files = fl.listFiles(new FileFilter() {
+            @Override
             public boolean accept(File file) {
                 return file.isFile();
             }
@@ -304,13 +305,13 @@ public class FileCDR implements AutoCloseable, Closeable {
         return newest;
     }
 
-    private LocalDateTime getLastModifiedTime() {
-        File lasModFile = getLastModifiedFile();
-        SimpleDateFormat sdf = new SimpleDateFormat();
-        String lastModTime = sdf.format(lasModFile.lastModified());
-        LocalDateTime dateTime = LocalDateTime.parse(lastModTime);
-        return dateTime;
-    }
+//    private LocalDateTime getLastModifiedTime() {
+//        File lasModFile = getLastModifiedFile();
+//        SimpleDateFormat sdf = new SimpleDateFormat();
+//        String lastModTime = sdf.format(lasModFile.lastModified());
+//        LocalDateTime dateTime = LocalDateTime.parse(lastModTime);
+//        return dateTime;
+//    }
 
     public String getFilePath() {
         return filePath;
