@@ -33,7 +33,7 @@ public class ReadMessage extends ReadFile {
     }
 
     private String getThueBao() {
-        Matcher match = Pattern.compile("\\d{10,12}").matcher(line);
+        Matcher match = Pattern.compile("\\+\\d*").matcher(line);
         match.find();
         return line.substring(match.start() + 1, match.end());
     }
@@ -48,7 +48,7 @@ public class ReadMessage extends ReadFile {
         Matcher match = Pattern.compile("\\|.*\\|").matcher(line);
         match.find();
         String temp = line.substring(match.start() + 1, match.end() - 1);
-        return new SimpleDateFormat("dd-mm-yyyy hh:mm:ss").parse(temp);
+        return new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").parse(temp);
     }
 
     private String getDauSo() {

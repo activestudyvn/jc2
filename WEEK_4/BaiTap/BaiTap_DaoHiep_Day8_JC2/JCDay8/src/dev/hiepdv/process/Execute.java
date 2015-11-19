@@ -8,10 +8,13 @@ package dev.hiepdv.process;
 import com.kiemanh.vn.common.AppLogger;
 import dev.hiepdv.file.ReadMessage;
 import dev.hiepdv.file.ReadStruct;
+import dev.hiepdv.file.WriteFile;
 import dev.hiepdv.message.CuPhapTinNhan;
 import dev.hiepdv.message.TinNhan;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -23,10 +26,12 @@ public class Execute {
 
     private ArrayList<CuPhapTinNhan> cuPhaps = new ArrayList<CuPhapTinNhan>();
     private ArrayList<TinNhan> tinNhans = new ArrayList<TinNhan>();
+    private ArrayList<TinNhan> filter;
+    private WriteFile writer =  null;
 
     public Execute() {
-        ReadMessage readMessage = new ReadMessage("E:\\JC2\\message.txt");
-        ReadStruct readStruct = new ReadStruct("E:\\JC2\\struct.txt");
+        ReadMessage readMessage = new ReadMessage("E:/message.txt");
+        ReadStruct readStruct = new ReadStruct("E:/struct.txt");
         AppLogger.getInstance().debug("- Bat dau lay du lieu tu message");
         while (readMessage.hasNext()) {
                 tinNhans.add(readMessage.getNext());
@@ -39,31 +44,54 @@ public class Execute {
             AppLogger.getInstance().debug("- Them moi 1 CuPhapTinNhan");
         }
         
+        AppLogger.getInstance().debug("- Sap xep lai message theo thoi gian");
+        
+        Collections.sort(tinNhans, new Comparator<TinNhan>() {
+            @Override
+            public int compare(TinNhan tn1, TinNhan tn2) {
+                return tn1.getThoiGianGui().compareTo(tn2.getThoiGianGui());
+                
+            }
+        });
+        
+        Iterator<TinNhan> itr1 = tinNhans.iterator();
+        while(itr1.hasNext()) {
+            System.out.println(itr1.next().getThoiGianGui());
+        }
         
     }
 
     public void filter() {
-        ArrayList<TinNhan> filter = new ArrayList<>();
+        filter = new ArrayList<>();
         Iterator<TinNhan> itr = tinNhans.iterator();
         TinNhan temp = null;
         while(itr.hasNext()) {
             temp = itr.next();
-            if(checkCuPhap(temp) && checkThoiGian(temp))
+            if(checkCuPhap(temp) && checkThoiGian(temp)) {
                filter.add(temp);
+               AppLogger.getInstance().debug("- Loc 1 message");
+            }
         }
         
-        Iterator<TinNhan> itr1 = filter.iterator();
-        while(itr1.hasNext()) {
-            System.out.println(itr1.next());
-        }
-        
-//        Iterator<CuPhapTinNhan> itr2 = cuPhaps.iterator();
-//        while(itr2.hasNext()) {
-//            System.out.println(itr2.next());
-//        }
+//        AppLogger.getInstance().debug("- Danh sach sau khi loc");
+//        Iterator<TinNhan> itr1 = filter.iterator();
+//        while(itr1.hasNext()) {
+//            System.out.println(itr1.next().getThoiGianGui());
+//        }        
     }
     
-    public boolean checkCuPhap(TinNhan tinNhan) {
+    public void writer(){
+        writer = new WriteFile();
+        
+        Iterator<TinNhan> itr = filter.iterator();
+        while (itr.hasNext()) {
+            writer.write(itr.next());
+        }
+        writer.close();
+    }
+    
+    
+    private boolean checkCuPhap(TinNhan tinNhan) {
         boolean checkCuPhap;
         String dauSo = tinNhan.getDauSo();
 
@@ -74,46 +102,40 @@ public class Execute {
             if (dauSo.equals(temp.getDauSo())) {
                 break;
             }
-        }
+        } 
         String[] cuPhap = temp.getCuPhap();
         for (int index = 0; index < cuPhap.length; index++) {
             if (tinNhan.getNdTin().equalsIgnoreCase(cuPhap[index])) {
                 return true;
             }
         }
-
         return false;
     }
-
-    public boolean checkThoiGian(TinNhan tinNhan) {
+    
+    private boolean checkThoiGian(TinNhan tinNhan) {
         Date today = new Date();
         boolean check1 = today.after(tinNhan.getThoiGianGui())
                 || today.equals(tinNhan.getThoiGianGui());
-        if (hasDoubleTinNhan(tinNhan)) {
+        
+        if (hasPrevious(tinNhan)) {
             boolean check2 = false;
-            TinNhan tn;
+            TinNhan temp;
 
             Calendar calendar1 = Calendar.getInstance();
             Calendar calendar2 = Calendar.getInstance();
 
             Iterator<TinNhan> itr = tinNhans.iterator();
             while (itr.hasNext()) {
-                tn = itr.next();
-                if (tn.getDauSo().equals(tinNhan.getDauSo())
-                        && tn.getThueBao().equals(tinNhan.getThueBao())) {
+                temp = itr.next();
+                if (temp.getDauSo().equals(tinNhan.getDauSo())
+                        && temp.getThueBao().equals(tinNhan.getThueBao())) {
 
                     calendar1.setTime(tinNhan.getThoiGianGui());
-                    calendar2.setTime(tn.getThoiGianGui());
+                    calendar2.setTime(temp.getThoiGianGui());
                     if (calendar1.after(calendar2)) {
                         calendar2.add(Calendar.MONTH, 1);
-                    } else {
-                        calendar1.add(Calendar.MONTH, 1);
-                    }
-
-                    if (calendar1.equals(calendar2)) {
-                        check2 = true;
-                    }
-
+                        check2 = calendar1.after(calendar2);
+                    } 
                 }
             }
 
@@ -123,28 +145,20 @@ public class Execute {
         }
     }
 
-    public boolean hasDoubleTinNhan(TinNhan tinNhan) {
-        Iterator<TinNhan> itr = tinNhans.iterator();
+    private boolean hasPrevious(TinNhan tinNhan) {
         TinNhan temp;
-        while (itr.hasNext()) {
+        int index = tinNhans.indexOf(tinNhan);
+        Iterator<TinNhan> itr = tinNhans.iterator();
+        
+        while(itr.hasNext()) {
             temp = itr.next();
             if (temp.getDauSo().equals(tinNhan.getDauSo())
-                    && temp.getThueBao().equals(tinNhan.getThueBao())) {
+                    && temp.getThueBao().equals(tinNhan.getThueBao())
+                    && tinNhan.getThoiGianGui().after(temp.getThoiGianGui())) {
                 return true;
             }
         }
         return false;
     }
     
-    private void test() {
-        Iterator<TinNhan> itr = tinNhans.iterator();
-        while(itr.hasNext()) {
-            System.out.println(itr.next());
-        }
-        
-//        Iterator<CuPhapTinNhan> itr2 = cuPhaps.iterator();
-//        while(itr2.hasNext()) {
-//            System.out.println(itr2.next());
-//        }
-    }
 }

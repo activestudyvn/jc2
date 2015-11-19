@@ -23,14 +23,10 @@ import java.time.LocalTime;
  */
 public class Main {
     public static void main(String[] args) throws ParseException {
-//        ReadStruct readStruct = new ReadStruct("E:\\JC2\\struct.txt");
-        ReadMessage readMessage = new ReadMessage("E:\\JC2\\message.txt");
-        TinNhan t = readMessage.getNext();
         
         Execute execute = new Execute();
-        //execute.filter();
-        
-        System.out.println(execute.checkThoiGian(t));
+        execute.filter();
+        execute.writer();     
         
     }
 }
