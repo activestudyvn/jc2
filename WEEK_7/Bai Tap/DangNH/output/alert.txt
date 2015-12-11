@@ -1,0 +1,10 @@
+9836272|Canh bao xam nhap vung|Vung 1|120|100|2015/12/01 00:12:23
+9836272|Canh bao ra khoi vung|Vung 1|120|100|2015/12/01 00:12:23
+9836272|Canh bao xam nhap vung|Vung 2|120|100|2015/12/01 00:12:23
+9836272|Canh bao ra khoi vung|Vung 2|900|100|2015/12/01 01:12:23
+9836272|Canh bao xam nhap vung|Vung 1|900|100|2015/12/01 01:12:23
+9836273|Canh bao xam nhap vung|Vung 2|900|100|2015/12/01 01:12:23
+9836273|Canh bao ra khoi vung|Vung 2|900|100|2015/12/01 01:12:23
+9836273|Canh bao xam nhap vung|Vung 1|900|100|2015/12/01 01:12:23
+9836273|Canh bao ra khoi vung|Vung 1|120|100|2015/12/01 00:12:23
+9836273|Canh bao xam nhap vung|Vung 2|120|100|2015/12/01 00:12:23
